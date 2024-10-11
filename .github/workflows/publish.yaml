@@ -1,0 +1,42 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  # We want to hook up the mindersec/minder repo to trigger this action
+  # on pushes to the main branch under docs.
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout docs
+        uses: actions/checkout@v4
+        with:
+          # TODO: change this to mindersec/minder once it is moved.
+          repository: stacklok/minder
+
+      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build website
+        run: npm run build
+
+      # Copied from https://github.com/stacklok/minder/blob/main/.github/workflows/deploy-doc.yaml
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Build output to publish to the `gh-pages` branch:
+          publish_dir: ./docs/build
+          cname: mindersec.github.io
