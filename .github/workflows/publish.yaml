@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Publish
 
 on:
   push:
@@ -40,11 +40,19 @@ jobs:
       - name: Build website
         run: npm run build
 
-      # Copied from https://github.com/stacklok/minder/blob/main/.github/workflows/deploy-doc.yaml
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Build output to publish to the `gh-pages` branch:
-          publish_dir: ./docs/build
-          # cname: mindersec.github.io
+          path: ./docs/build
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+
+    permissions:
+      id-token: write
+      pages: write
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
