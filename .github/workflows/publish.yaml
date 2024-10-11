@@ -13,8 +13,16 @@ on:
 
 jobs:
   build:
+    name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      pages: write
+
+    defaults:
+      run:
+        working-directory: ./docs
     steps:
       - name: Checkout docs
         uses: actions/checkout@v4
