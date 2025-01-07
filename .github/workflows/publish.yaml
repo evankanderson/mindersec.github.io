@@ -11,6 +11,10 @@ on:
   # on pushes to the main branch under docs.
   workflow_dispatch:
 
+  # Run once a day until further automation is wired up.
+  schedule:
+    - cron: "15 0 * * *"
+
 jobs:
   build:
     name: Deploy to GitHub Pages
